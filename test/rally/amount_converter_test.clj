@@ -27,7 +27,4 @@
 
   (testing "I'm gonna pop some tags"
     (is (= "Twenty dollars"
-         (ac/amount->string 20)
-           )
-        ))
-  )
+         (ac/amount->string 20)))))
