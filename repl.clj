@@ -85,7 +85,7 @@
       (->> (map last row)
            (map #(format "%3d" %))
            (str/join " ")
-           println)
-    spiral)))
+           println))
+    spiral))
 
-(print-spiral (make-spiral 24))
+(print-spiral (make-spiral 99))
