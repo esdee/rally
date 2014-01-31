@@ -1,3 +1,4 @@
+;; Exercise 5
 (ns rally.templating-engine
   (:require [clojure.string :as str]))
 

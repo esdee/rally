@@ -20,6 +20,11 @@
     (is (thrown? Exception
                  (te/template->string {"name" "Billy"} "${name} ${age}"))))
 
+  (testing "Strings can be escaped"
+    (is (= "hello ${Billy}"
+           (te/template->string {"name" "Billy"}
+                                "hello ${${name}}"))))
+
   (testing "The exception thrown referenced keys in the variable map are missing
              should list the keys that are missing"
     (let [exception (try (te/template->string {"name" "Billy"}
