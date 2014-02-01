@@ -1,7 +1,6 @@
 (ns rally.conway
   (:require [clojure.string :as str]))
 
-
 (defn string->board
   "Takes a board in string format and returns a seq of cell tuples.
    A cell tuple is [x y dead-or-alive]"
@@ -12,6 +11,7 @@
        (apply concat)))
 
 (defn board->string
+  "Takes a board and returns a string - used for testing."
   [board cols]
   (->> board
        (map last)
@@ -42,24 +42,27 @@
   "Given a board and a cell return all neighbours of the cell"
   [board [x y _]]
   (remove nil?
-          [(cell board x (dec y))       ; 12 o'clock
-           (cell board (inc x) (dec y)) ; 1
-           (cell board (inc x) y)       ; 3
-           (cell board (inc x) (inc y)) ; 5
-           (cell board x (inc y))       ; 6
-           (cell board (dec x) (inc y)) ; 8
-           (cell board (dec x) y)       ; 9
-           (cell board (dec x) (dec y)) ; 11
+          ; get a neighbour from each of the compass points
+          [(cell board x (dec y))       ; N
+           (cell board (inc x) (dec y)) ; NE
+           (cell board (inc x) y)       ; E
+           (cell board (inc x) (inc y)) ; SE
+           (cell board x (inc y))       ; S
+           (cell board (dec x) (inc y)) ; SW
+           (cell board (dec x) y)       ; W
+           (cell board (dec x) (dec y)) ; NW
            ]))
 
 (defn- calculate-life
   "Given the current value of a cell and the count of all
-  its live neighbours return if it should live, 1 or die 0."
-  [current surrounding]
-  (if (or (and (= "0" current)
-               (= 3 surrounding))
-          (and (= "1" current)
-               (> 4 surrounding 1)))
+  its live neighbours return if it should live 1, or die 0."
+  [life-value live-neighbours]
+  ; if a cell is dead and has 3 neighbours or alive and has 2 or 3 neighbours
+  ; it lives, otherwise it dies
+  (if (or (and (= "0" life-value)
+               (= 3 live-neighbours)) ; dead and has 3 neighbours
+          (and (= "1" life-value)
+               (> 4 live-neighbours 1))) ; alive and has 2 or 3 live neighbours
     "1"
     "0"))
 
@@ -72,8 +75,8 @@
            board))
   ([board cell]
    (let [[x y alive] cell
-         life-force (reduce (fn [life-force [_ _ alive?]]
-                              (+ life-force (Integer/parseInt alive?)))
-                            0
-                            (neighbours board cell))]
-     [x y (calculate-life alive life-force)])))
+         live-neighbours (reduce (fn [life-force [_ _ alive?]]
+                                   (+ life-force (Integer/parseInt alive?)))
+                                 0
+                                 (neighbours board cell))]
+     [x y (calculate-life alive live-neighbours)])))
