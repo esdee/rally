@@ -1,3 +1,4 @@
+;; Exercise 3
 (ns rally.spiral
   (:require [clojure.string :as str]))
 
@@ -110,4 +111,3 @@
            (str/join " ")
            println))
     spiral))
-
