@@ -34,7 +34,13 @@ Test is in test/rally/templating_engine_test.clj
 
 ## Usage
 
-Tests can be run with lein test
+Tests can be run with
+
+    lein test
+
+Sample output can be seen with
+
+    lein run
 
 Look forward to discussing whenever convenient.
 
