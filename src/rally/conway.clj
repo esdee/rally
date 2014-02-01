@@ -2,91 +2,94 @@
   (:require [clojure.string :as str]))
 
 
-(defn- cell
-  "Given an x and y coord return the cell. Nil if it does not exist."
-  [board x y]
-  (first
-    (filter (fn [[cx cy _]]
-              (and (= x cx) (= y cy)))
-            board)))
+(defn cell
+  "Given a board and x, y coords, return the cell at that position.
+  Will raise an IndexOutOfBoundsException with incorrect parameters"
+  [{:keys [rows cols cells]} x y]
+  (nth cells (+ (* y cols) x)))
 
-;TODO use a for here instead
-(defn- neighbours
-  "Given a board and a cell return all neighbours of the cell"
-  [board [x y _]]
-  (remove nil?
-          ; get a neighbour from each of the compass points
-          [(cell board x (dec y))       ; N
-           (cell board (inc x) (dec y)) ; NE
-           (cell board (inc x) y)       ; E
-           (cell board (inc x) (inc y)) ; SE
-           (cell board x (inc y))       ; S
-           (cell board (dec x) (inc y)) ; SW
-           (cell board (dec x) y)       ; W
-           (cell board (dec x) (dec y)) ; NW
-           ]))
+(defn neighbours
+  "Given a board and a cell return all neighbours of the cell.
+  Neighbours are checked along the 8 compass points N NE E SE S SW W NW"
+  [{:keys [rows cols]:as board} x y]
+  (let [valid-coord? #(and (> %1 -1) (> %2 -1) (< %1 cols) (< %2 rows))
+                        ;N       NE     E    SE
+        compass-points [[0 -1] [1 -1] [1 0] [1 1]
+                       ; S      SW      W     NW
+                        [0 1] [-1 1] [-1 0] [-1 -1]]]
+    (remove nil?
+            (map (fn [[x-delta y-delta]]
+                   (let [neighbour-x (+ x x-delta)
+                         neighbour-y (+ y y-delta)]
+                     (when (valid-coord? neighbour-x neighbour-y)
+                       (cell board neighbour-x neighbour-y))))
+                 compass-points))))
 
-(defn- calculate-life
+(defn calculate-life
   "Given the current value of a cell and the count of all
   its live neighbours return if it should live 1, or die 0."
   [life-value live-neighbours]
   ; if a cell is dead and has 3 neighbours or alive and has 2 or 3 neighbours
   ; it lives, otherwise it dies
-  (if (or (and (= "0" life-value)
+  (if (or (and (= \0 life-value)
                (= 3 live-neighbours)) ; dead and has 3 neighbours
-          (and (= "1" life-value)
+          (and (= \1 life-value)
                (> 4 live-neighbours 1))) ; alive and has 2 or 3 live neighbours
-    "1"
-    "0"))
+    \1
+    \0))
 
 (defn age
   "Age a cell on the board, or the entire board"
-  ([board]
-   (reduce (fn [new-board cell]
-             (conj new-board (age board cell)))
-           []
-           board))
-  ([board cell]
-   (let [[x y alive] cell
-         live-neighbours (reduce (fn [life-force [_ _ alive?]]
-                                   (+ life-force (Integer/parseInt alive?)))
+  ([{:keys [rows cols] :as board}]
+   (let [cell-coords (for [y (range rows)
+                           x (range cols)]
+                       [x y]) ; all possible coords on board
+         ]
+     (assoc board
+       :cells (reduce (fn [cells [x y]]
+                        (conj cells (age board x y)))
+                      []
+                      cell-coords))))
+  ([board x y]
+   (let [live-neighbours (reduce (fn [life-force neighbour]
+                                   (+ life-force (Integer/parseInt (str neighbour))))
                                  0
-                                 (neighbours board cell))]
-     [x y (calculate-life alive live-neighbours)])))
+                                 (neighbours board x y))]
+     (calculate-life (cell board x y) live-neighbours))))
 
 (defn string->board
-  "Takes a board in string format and returns a seq of cell tuples.
-   A cell tuple is [x y dead-or-alive]"
+  "Takes a board in string format and returns a
+   map {:rows count-of-board-rows
+        :cols count of cols per row
+        :cells flat seq of cells 0s and 1s }"
   [board-string]
-  (->> (str/split board-string #"\s+")
-       (map-indexed (fn [idx line]
-                      (map-indexed #(list %1 idx (str %2)) line)))
-       (apply concat)))
+  (let [rows (str/split board-string #"\s+")]
+    {:rows (count rows)
+     :cols (count (first rows))
+     :cells (reduce (fn [cells row]
+                      (concat cells (vec row)))
+                    []
+                    rows)}))
 
 (defn board->string
   "Takes a board and returns a string - used for testing."
-  [board cols]
-  (->> board
-       (map last)
+  [{:keys [cols cells]}]
+  (->> cells
        (partition cols)
        (map #(apply str %))
        (str/join " ")))
 
 (defn print-board
   "Format and print a board"
-  [board cols]
-  (let [rows (->> board
-                  (map last)
-                  (partition cols)
-                  (map #(apply str %)))]
-    (doseq [row rows]
-      (println row))))
+  [board]
+  (doseq [row (str/split (board->string board) #"\s+")]
+    (println row)))
 
 ;; Usage -----------------------------------------------------------------------
 
 ; from a repl
 ;   (require '[rally.conway :refer (string->board age print-board)])
 ; create a board
-;   (def board (string->board "01000 10011 11001 01000 10001"))
+;   (def board (string->board "01001 10011 11001 01000 10001"))
 ; iterate and print
-;   (print-board (age board) 5)
+;   (print-board (age board))
