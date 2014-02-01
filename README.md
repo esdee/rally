@@ -1,6 +1,6 @@
 ## Rally Software coding challenge
 
-Thanks for giving me the opportunity tp try out these challenges.
+Thanks for giving me the opportunity to try out these challenges.
 
 I really enjoyed them and ending up doing four of them.
 
