@@ -19,6 +19,16 @@
        (map #(apply str %))
        (str/join " ")))
 
+(defn print-board
+  "Format and print a board"
+  [board cols]
+  (let [rows (->> board
+                  (map last)
+                  (partition cols)
+                  (map #(apply str %)))]
+    (doseq [row rows]
+      (println row))))
+
 (defn- cell
   "Given an x and y coord return the cell. Nil if it does not exist."
   [board x y]
