@@ -5,7 +5,7 @@
 (def conversion-dictionary {
   :ones ["" "one" "two" "three" "four" "five" "six" "seven" "eight" "nine"]
   :tens ["ten" "eleven" "twelve" "thirteen" "twenty" "thirty" "forty" "fifty" "sixty" "seventy" "eighty" "ninety"]
-  :units ["" "thousand" "million" "billion" "trillion"]})
+  :units ["" "thousand" "million" "billion" "trillion" "i'll never know"]})
 
 ;; Convenience function to retrieve a value from the dictionary
 ;; based on the key and index
