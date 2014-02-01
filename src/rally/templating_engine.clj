@@ -3,7 +3,7 @@
   (:require [clojure.string :as str]))
 
 ;; This is the regex used to replace the template variables
-;; of the for ${x}
+;; of the form ${x}
 (def ^:private regex #"\$\{([\w|-]+)\}")
 
 (defn template->string
