@@ -24,9 +24,9 @@
   (println "========================")
   (let [board0 (string->board"01000 10011 11001 01000 10001")]
     (println (format "Original board"))
-    (print-board board0 5)
+    (print-board board0)
     (println (format "Board generation 1"))
-    (print-board (age board0) 5))
+    (print-board (age board0)))
   (println)
 ;-------------------------------------------------------------------------------
   (println "Exercise 5: Templating Engine")
