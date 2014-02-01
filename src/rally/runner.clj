@@ -30,6 +30,6 @@
   (println "Template \"${name} has an appointment on ${day}\"")
   (println "With map {\"name\" \"Billy\", \"day\" \"Thursday\"}")
   (println (template->string
-             {"name" "Billy" "day" "Thursday"}
-             "${name} has an appointment on ${day}"))
+             "${name} has an appointment on ${day}"
+             {"name" "Billy" "day" "Thursday"}))
   (System/exit 0))
