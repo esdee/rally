@@ -1,7 +1,6 @@
 (ns rally.conway
   (:require [clojure.string :as str]))
 
-
 (defn cell
   "Given a board and x, y coords, return the cell at that position.
   Will raise an IndexOutOfBoundsException with incorrect parameters"
@@ -43,8 +42,7 @@
   ([{:keys [rows cols] :as board}]
    (let [cell-coords (for [y (range rows)
                            x (range cols)]
-                       [x y]) ; all possible coords on board
-         ]
+                       [x y])]; all possible coords on board
      (assoc board
        :cells (reduce (fn [cells [x y]]
                         (conj cells (age board x y)))
