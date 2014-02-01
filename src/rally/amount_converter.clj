@@ -7,7 +7,7 @@
   :tens ["ten" "eleven" "twelve" "thirteen" "twenty" "thirty" "forty" "fifty" "sixty" "seventy" "eighty" "ninety"]
   :units ["" "thousand" "million" "billion" "trillion"]})
 
-;; Convenience finction to retrieve a value from the dictionary
+;; Convenience function to retrieve a value from the dictionary
 ;; based on the key and index
 ;; e.g. (from-dict :ones 1) => "one"
 (defn- from-dict
