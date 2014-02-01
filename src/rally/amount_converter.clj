@@ -73,4 +73,3 @@
         " and "
         (remove empty? [(dollars->string dollars) (cents->string cents)]))
       " dollars")))
-

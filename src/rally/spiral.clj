@@ -69,7 +69,7 @@
         rows (int (Math/ceil (/ end cols)))
         col0 (int (Math/floor (/ (dec cols) 2)))
         row0 (int (Math/floor (/ (dec rows) 2)))
-        cell0 [(long col0) (long row0) 0]] ; cast for comparison sorting later
+        cell0 [col0 row0 0]]
     (->> (map (fn [point] (conj point nil))
               (for [x (range 0 cols)
                     y (range 0 rows)]
@@ -96,12 +96,12 @@
   [spiral]
   (sort (fn [[x1 y1 _] [x2 y2 _]]
           (if (= y1 y2)
-            (.compareTo x1 x2)
-            (.compareTo y1 y2)))
+            (compare x1 x2)
+            (compare y1 y2)))
         spiral))
 
 (defn print-spiral
-  "Given a spiral, print it to *out*, then return it"
+  "Given a spiral, sort it, print it to *out*, then return it"
   [spiral]
   (let [spiral (sort-spiral-for-printing spiral)
         cols (int (Math/sqrt (count spiral)))]

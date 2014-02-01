@@ -26,5 +26,5 @@
            (ac/amount->string 0.12))))
 
   (testing "I'm gonna pop some tags"
-    (is (= "Twenty dollars"
+    (is (= "Twenty dollars" ; not Twenty-
          (ac/amount->string 20)))))
