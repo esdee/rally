@@ -22,3 +22,11 @@
            (str/replace template-string regex "%s")
            vals-for-template)))
 
+;; Usage -----------------------------------------------------------------------
+
+; from a repl
+;   (require '[rally.templating-engine :refer (template->string)])
+; print a template
+;   (template->string "${name} has an appointment on ${day}"
+;                     {"name" "Billy", "day" "Thursday"})
+;   => "Billy has an appintment on Thursday"

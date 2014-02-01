@@ -4,6 +4,8 @@ Thanks for giving me the opportunity to try out these challenges.
 
 I really enjoyed them and ending up doing four of them.
 
+Usage example for each file is given at the bottom of each file.
+
 ### Exercise 1
 Convert an dollar amount to an english string.
 

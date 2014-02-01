@@ -73,3 +73,11 @@
         " and "
         (remove empty? [(dollars->string dollars) (cents->string cents)]))
       " dollars")))
+
+;; Usage -----------------------------------------------------------------------
+
+;  from the repl
+;    (require '[rally.amount-converter :refer (amount->string)])
+;    (amount->string 2523.04)
+;    => "Two thousand five hundred twenty-three and 04/100 dollars"
+

@@ -111,3 +111,10 @@
            (str/join " ")
            println))
     spiral))
+
+;; Usage -----------------------------------------------------------------------
+
+; from a repl
+;   (require '[rally.spiral :refer (make-spiral print-spiral)])
+; print a spiral
+;   (print-spiral (make-spiral 24))

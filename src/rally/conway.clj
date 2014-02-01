@@ -1,33 +1,6 @@
 (ns rally.conway
   (:require [clojure.string :as str]))
 
-(defn string->board
-  "Takes a board in string format and returns a seq of cell tuples.
-   A cell tuple is [x y dead-or-alive]"
-  [board-string]
-  (->> (str/split board-string #"\s+")
-       (map-indexed (fn [idx line]
-                      (map-indexed #(list %1 idx (str %2)) line)))
-       (apply concat)))
-
-(defn board->string
-  "Takes a board and returns a string - used for testing."
-  [board cols]
-  (->> board
-       (map last)
-       (partition cols)
-       (map #(apply str %))
-       (str/join " ")))
-
-(defn print-board
-  "Format and print a board"
-  [board cols]
-  (let [rows (->> board
-                  (map last)
-                  (partition cols)
-                  (map #(apply str %)))]
-    (doseq [row rows]
-      (println row))))
 
 (defn- cell
   "Given an x and y coord return the cell. Nil if it does not exist."
@@ -80,3 +53,40 @@
                                  0
                                  (neighbours board cell))]
      [x y (calculate-life alive live-neighbours)])))
+
+(defn string->board
+  "Takes a board in string format and returns a seq of cell tuples.
+   A cell tuple is [x y dead-or-alive]"
+  [board-string]
+  (->> (str/split board-string #"\s+")
+       (map-indexed (fn [idx line]
+                      (map-indexed #(list %1 idx (str %2)) line)))
+       (apply concat)))
+
+(defn board->string
+  "Takes a board and returns a string - used for testing."
+  [board cols]
+  (->> board
+       (map last)
+       (partition cols)
+       (map #(apply str %))
+       (str/join " ")))
+
+(defn print-board
+  "Format and print a board"
+  [board cols]
+  (let [rows (->> board
+                  (map last)
+                  (partition cols)
+                  (map #(apply str %)))]
+    (doseq [row rows]
+      (println row))))
+
+;; Usage -----------------------------------------------------------------------
+
+; from a repl
+;   (require '[rally.conway :refer (string->board age print-board)])
+; create a board
+;   (def board (string->board "01000 10011 11001 01000 10001"))
+; iterate and print
+;   (print-board (age board) 5)
