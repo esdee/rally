@@ -39,15 +39,10 @@
 
 (defn age
   "Age a cell on the board, or the entire board"
-  ([{:keys [rows cols] :as board}]
-   (let [cell-coords (for [y (range rows)
-                           x (range cols)]
-                       [x y])]; all possible coords on board
-     (assoc board
-       :cells (reduce (fn [cells [x y]]
-                        (conj cells (age board x y)))
-                      []
-                      cell-coords))))
+  ([{:keys [rows cols coords] :as board}]
+   (let [age-board (partial age board)]
+     (assoc board :cells (map (fn [[x y]] (age-board x y))
+                              coords))))
   ([board x y]
    (let [live-neighbours (reduce (fn [life-force neighbour]
                                    (+ life-force (Integer/parseInt (str neighbour))))
@@ -61,9 +56,13 @@
         :cols count of cols per row
         :cells flat seq of cells 0s and 1s }"
   [board-string]
-  (let [rows (str/split board-string #"\s+")]
+  (let [rows (str/split board-string #"\s+")
+        cols (count (first rows))]
     {:rows (count rows)
-     :cols (count (first rows))
+     :cols cols
+     :coords (for [y (range (count rows))
+                   x (range cols)]
+               [x y])
      :cells (reduce (fn [cells row]
                       (concat cells (vec row)))
                     []

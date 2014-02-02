@@ -7,7 +7,7 @@
     (is (= {:rows 5
             :cols 5
             :cells [\0 \1 \0 \0 \0 \1 \0 \0 \1 \1 \1 \1 \0 \0 \1 \0 \1 \0 \0 \0 \1 \0 \0 \0 \1]}
-           (life/string->board "01000 10011 11001 01000 10001"))))
+           (dissoc (life/string->board "01000 10011 11001 01000 10001") :coords) )))
   (testing "A board can be correctly converted back to a string"
     (is (= "01000 10011 11001 01000 10001"
            (life/board->string
