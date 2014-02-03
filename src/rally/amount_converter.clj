@@ -1,6 +1,5 @@
 ;; Exercise 1
 (ns rally.amount-converter
-  (:import (javax.management.relation RelationServiceMBean))
   (:require [clojure.string :as str]))
 
 (def conversion-dictionary {
