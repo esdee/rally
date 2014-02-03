@@ -1,5 +1,6 @@
 ;; Exercise 1
 (ns rally.amount-converter
+  (:import (javax.management.relation RelationServiceMBean))
   (:require [clojure.string :as str]))
 
 (def conversion-dictionary {
@@ -55,26 +56,45 @@
            (apply str)
            str/trim))))
 
-;; Formats cents according to the spec, e.g 12 => "12/100", 4 => "04/100"
-(defn- cents->string
-  [cents]
-  (when cents
-    (format "%02d/100" (Integer/parseInt cents))))
+;; Protocol used to humanize numbers ------------------------------------------
+(defprotocol IHumanize
+  (humanize [this]))
+
+(extend-protocol IHumanize
+  Object
+  (humanize [this] (str this))
+
+  Long
+  (humanize [long]
+    (->> (str long)
+         str/reverse
+         (map #(Integer/parseInt (str %)) )
+         (partition 3 3 nil)
+         (dollars->string)))
+
+  Integer
+  (humanize [integer]
+    (humanize (Long/parseLong (str integer))))
+
+  clojure.lang.Ratio
+  (humanize [ratio]
+    (format "%02d/100" (Integer/parseInt (str (* ratio 100)))))
+
+  Double
+  (humanize [double]
+    (let [dollars (long double)
+          cents-as-ratio (/ (Math/round (* (mod double 1) 100)) 100)]
+      (if (and (pos? dollars) (pos? cents-as-ratio))
+        (str (humanize dollars) " and " (humanize cents-as-ratio))
+        (if (pos? dollars) (humanize dollars) (humanize cents-as-ratio))))))
 
 (defn amount->string
   "Given an amount as a number, convert it to a string representation"
   [amount]
-  (let [[d cents] (str/split (str amount) #"\.") ; split into dollars and cents
-         dollars (->> (str/reverse d)
-                     (map #(Integer/parseInt (str %)) )
-                     (partition 3 3 nil))] ; 1234 => '((4 3 2) (1))
-    (str
-      (str/join
-        " and "
-        (remove empty? [(dollars->string dollars) (cents->string cents)]))
-      " dollars")))
+  (let [humanized  (-> amount str (Double/parseDouble) humanize)]
+    (str humanized " dollars")))
 
-;; Usage -----------------------------------------------------------------------
+; Usage -----------------------------------------------------------------------
 
 ;  from the repl
 ;    (require '[rally.amount-converter :refer (amount->string)])
