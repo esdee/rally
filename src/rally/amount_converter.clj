@@ -45,8 +45,8 @@
 (defn- dollars->string
   [dollars]
   (when (seq dollars)
-    (let [d-string (->> dollars
-                        (map-indexed #(list (from-dict :units %1) %2))
+    (let [d-string (->> dollars ; ;[(3 2 1) (4 nil nil)]
+                        (map-indexed #(list (from-dict :units %1) %2)) ; [(0 (3 2 1)) (1 (4 nil nil))]
                         (map unit-nums->string)
                         reverse
                         (str/join " "))]
@@ -67,8 +67,8 @@
   (humanize [long]
     (->> (str long)
          str/reverse
-         (map #(Integer/parseInt (str %)) )
-         (partition 3 3 nil)
+         (map #(Integer/parseInt (str %)))
+         (partition 3 3 nil) ; 123 => '((3 2 1))
          (dollars->string)))
 
   Integer
@@ -91,12 +91,11 @@
   "Given an amount as a number, convert it to a string representation"
   [amount]
   (let [humanized  (-> amount str (Double/parseDouble) humanize)]
+    ;BETTER => (str (humanize amount) " dollars")
     (str humanized " dollars")))
-
 ; Usage -----------------------------------------------------------------------
 
 ;  from the repl
 ;    (require '[rally.amount-converter :refer (amount->string)])
 ;    (amount->string 2523.04)
 ;    => "Two thousand five hundred twenty-three and 04/100 dollars"
-

@@ -13,7 +13,7 @@
                                   s))
                         spiral
                         new-cells)]
-    (concat removed new-cells)))
+    (concat removed new-cells))) ; used reduce because of more than one cell
 
 (defn- right
   "Create a number of cells to the right of the specified cell.
@@ -53,7 +53,7 @@
         row (left cells-to-add (last col))]
     (concat [first-cell] col row)))
 
-;; Even iterations create a upside down L shape up and to the left of the
+;; Odd iterations create a upside down L shape up and to the left of the
 ;; current cells.
 (defn- odd-iteration
   [current-cell cells-to-add]
@@ -71,8 +71,8 @@
         row0 (int (Math/floor (/ (dec rows) 2)))
         cell0 [col0 row0 0]]
     (->> (map (fn [point] (conj point nil))
-              (for [x (range 0 cols)
-                    y (range 0 rows)]
+              (for [x (range 0 cols) ; could just be (range cols)
+                    y (range 0 rows)] ; ditto
                 [x y]))
          (update-cells [cell0]))))
 
@@ -84,12 +84,14 @@
            even-iteration? true
            add 1]
       (let [last-cell (last spiral)
-            iteration-fn (if even-iteration? even-iteration odd-iteration)]
-        (if (<= i (last last-cell))
-          spiral
-          (let [new-cells (iteration-fn last-cell add)
-                new-spiral (update-cells new-cells spiral)]
-            (recur new-spiral (not even-iteration?) (inc add))))))))
+            iteration-fn (if even-iteration? even-iteration odd-iteration)
+            last-val (last last-cell)]
+        (if (or (nil? last-val) (<= i (last last-cell)))
+            spiral
+            (let [new-cells (map (fn [[x y v]] [x y (if (> v i) nil v)])
+                                 (iteration-fn last-cell add))
+                  new-spiral (update-cells new-cells spiral)]
+              (recur new-spiral (not even-iteration?) (inc add))))))))
 
 (defn- sort-spiral-for-printing
   "Sort the cells of the spiral in the correct order for printing"
@@ -107,7 +109,7 @@
         cols (int (Math/sqrt (count spiral)))]
     (doseq [row (partition cols spiral)]
       (->> (map last row)
-           (map #(format "%3d" %))
+           (map #(if % (format "%3d" %) "   "))
            (str/join " ")
            println))
     spiral))

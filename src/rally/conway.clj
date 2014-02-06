@@ -47,7 +47,7 @@
    (let [live-neighbours (reduce (fn [life-force neighbour]
                                    (+ life-force (Integer/parseInt (str neighbour))))
                                  0
-                                 (neighbours board x y))]
+                                 (neighbours board x y))] ; could have mapped then reduced
      (calculate-life (cell board x y) live-neighbours))))
 
 (defn string->board

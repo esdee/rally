@@ -1,6 +1,6 @@
 (ns rally.spiral-test
   (:require [clojure.test :refer :all]
-            [rally.spiral :as sp]))
+            [rally.spiral :as sp :reload true]))
 
 (deftest printing-the-spiral
   (testing "Spiral specified should print"
@@ -9,4 +9,11 @@
                 " 18   5   0   1  10\n"
                 " 17   4   3   2  11\n"
                 " 16  15  14  13  12\n")
-           (with-out-str (sp/print-spiral (sp/make-spiral 24)))))))
+           (with-out-str (sp/print-spiral (sp/make-spiral 24))))))
+  (testing "Numbers below a square root should stop at the specified index"
+    (is (= (str " 20  21            \n"
+                " 19   6   7   8   9\n"
+                " 18   5   0   1  10\n"
+                " 17   4   3   2  11\n"
+                " 16  15  14  13  12\n")
+           (with-out-str (sp/print-spiral (sp/make-spiral 21))))))) 
