@@ -2,10 +2,10 @@
 (ns rally.amount-converter
   (:require [clojure.string :as str]))
 
-(def conversion-dictionary {
-  :ones ["" "one" "two" "three" "four" "five" "six" "seven" "eight" "nine"]
-  :tens ["ten" "eleven" "twelve" "thirteen" "twenty" "thirty" "forty" "fifty" "sixty" "seventy" "eighty" "ninety"]
-  :units ["" "thousand" "million" "billion" "trillion" "i'll never know"]})
+(def conversion-dictionary
+  {:ones ["" "one" "two" "three" "four" "five" "six" "seven" "eight" "nine"]
+   :tens ["ten" "eleven" "twelve" "thirteen" "twenty" "thirty" "forty" "fifty" "sixty" "seventy" "eighty" "ninety"]
+   :units ["" "thousand" "million" "billion" "trillion" "i'll never know"]})
 
 ;; Convenience function to retrieve a value from the dictionary
 ;; based on the key and index
@@ -50,10 +50,8 @@
                         (map unit-nums->string)
                         reverse
                         (str/join " "))]
-      (->> [(str/capitalize (first d-string)) (rest d-string)]
-           flatten
-           (apply str)
-           str/trim))))
+      (str/trim (str/capitalize d-string)))))
+
 
 ;; Protocol used to humanize numbers ------------------------------------------
 (defprotocol IHumanize
@@ -90,9 +88,7 @@
 (defn amount->string
   "Given an amount as a number, convert it to a string representation"
   [amount]
-  (let [humanized  (-> amount str (Double/parseDouble) humanize)]
-    ;BETTER => (str (humanize amount) " dollars")
-    (str humanized " dollars")))
+  (str (humanize amount) " dollars"))
 ; Usage -----------------------------------------------------------------------
 
 ;  from the repl
