@@ -85,8 +85,8 @@
            add 1]
       (let [last-cell (last spiral)
             iteration-fn (if even-iteration? even-iteration odd-iteration)
-            last-val (last last-cell)]
-        (if (or (nil? last-val) (<= i (last last-cell)))
+            last-val (or (last last-cell) i)]
+        (if  (<= i last-val)
             spiral
             (let [new-cells (map (fn [[x y v]] [x y (if (> v i) nil v)])
                                  (iteration-fn last-cell add))
