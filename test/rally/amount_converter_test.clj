@@ -1,6 +1,6 @@
 (ns rally.amount-converter-test
   (:require [clojure.test :refer :all]
-            [rally.amount-converter :as ac]))
+            [rally.amount-converter :as ac :reload true]))
 
 (deftest amount->string
   (testing "The number to convert as per the spec"
